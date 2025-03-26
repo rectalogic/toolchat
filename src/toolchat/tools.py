@@ -7,6 +7,7 @@ import yaml
 from pydantic_ai.mcp import MCPServer, MCPServerHTTP, MCPServerStdio
 from pydantic_ai.tools import ToolDefinition
 
+
 # Post-process schema so it works with Gemini
 # https://github.com/pydantic/pydantic-ai/issues/1250
 class MCPServerMixin(MCPServer):
@@ -27,8 +28,8 @@ class MCPServerHTTPSchema(MCPServerMixin, MCPServerHTTP):
     pass
 
 
-def load_mcp_servers(path: str) -> list[MCPServer]:
-    if not os.path.exists(path):
+def load_mcp_servers(path: str | None) -> list[MCPServer]:
+    if not path or not os.path.exists(path):
         return []
     with open(path) as f:
         return [_load_mcp_server(s) for s in yaml.safe_load(f)]

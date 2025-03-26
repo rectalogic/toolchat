@@ -31,9 +31,8 @@ from .tools import load_mcp_servers
 @click.option(
     "--tools",
     type=click.Path(dir_okay=False),
-    help="Path to tools yaml file - ./tools.yaml if it exists",
+    help="Path to tools yaml file",
     show_default=True,
-    default="./tools.yml",
 )
 @click.option("--system-prompt", "-s", help="System prompt.", multiple=True, default=())
 @click.option("--markdown/--no-markdown", help="Render LLM responses as Markdown.", default=True)
@@ -41,7 +40,7 @@ from .tools import load_mcp_servers
 def cli(
     model: KnownModelName,
     dotenv: str,
-    tools: str,
+    tools: str | None,
     system_prompt: Sequence[str],
     markdown: bool,
 ) -> None:
