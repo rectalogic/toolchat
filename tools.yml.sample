@@ -1,0 +1,8 @@
+- type: stdio
+  server:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "."]
+- type: stdio
+  server:
+    command: npx
+    args: ["@playwright/mcp@latest"]
