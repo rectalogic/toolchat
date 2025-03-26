@@ -8,8 +8,7 @@ requires-python = ">=3.13"
 dependencies = [
     "click>=8.1.8",
     "dotenv>=0.9.9",
-    "pydantic-ai>=0.0.44",
-    "pydantic-mcp>=0.1.1",
+    "pydantic-ai[mcp]>=0.0.44",
     "pyyaml>=6.0.2",
     "rich>=13.9.4",
 ]

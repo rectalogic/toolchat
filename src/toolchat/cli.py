@@ -5,14 +5,14 @@ import asyncio
 import os
 import pathlib
 import typing as t
-from collections.abc import Callable, AsyncIterator
+from collections.abc import Callable, AsyncIterator, Sequence
 
 import click
 from dotenv import load_dotenv
 from pydantic_ai.models import KnownModelName
 
-from . import chat
-from .tools import load_tools
+from .chat import chat
+from .tools import load_mcp_servers
 
 
 @click.command()
@@ -38,19 +38,16 @@ from .tools import load_tools
     show_default=True,
     default="./tools.yaml",
 )
-@click.option("--system-message", "-s", help="System message.")
+@click.option("--system-prompt", "-s", help="System prompt.", multiple=True, default=())
 @click.option("--markdown/--no-markdown", help="Render LLM responses as Markdown.", default=True)
 @click.version_option()
 def cli(
     model: KnownModelName,
     dotenv: str,
     tools: str,
-    system_message: str | None,
+    system_prompt: Sequence[str],
     markdown: bool,
 ) -> None:
     load_dotenv(dotenv)
 
-    asyncio.run(chat.Chat(
-        model,
-        tool_servers=load_tools(tools),
-    ).chat(markdown, system_message=system_message))
+    asyncio.run(chat(model, markdown, system_prompt=system_prompt, mcp_servers=load_mcp_servers(tools)))

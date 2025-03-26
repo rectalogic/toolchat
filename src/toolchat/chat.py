@@ -12,11 +12,10 @@ import click
 
 from rich.markdown import Markdown
 from pydantic_ai import Agent
+from pydantic_ai.mcp import MCPServer
 from pydantic_ai.models import KnownModelName
-from mcp import StdioServerParameters
 
 from .render import console, render_text, render_markdown
-from .mcpclient import MCPClient
 
 class Command(enum.StrEnum):
     MULTI = "!multi"
@@ -24,31 +23,13 @@ class Command(enum.StrEnum):
     QUIT = "!quit"
 
 
-class Chat:
-    model: KnownModelName
-    client: MCPClient | None
+async def chat(model: KnownModelName, markdown: bool, system_prompt: str | Sequence[str] = (), mcp_servers: Sequence[MCPServer] = ()) -> None:
+    agent = Agent(model, system_prompt=system_prompt, mcp_servers=mcp_servers)
 
-    def __init__(
-        self,
-        model: KnownModelName,
-        tool_servers: list[StdioServerParameters] | None = None,
-    ):
-        self.model = model
-        if tool_servers:
-            self.client = MCPClient(tool_servers)
-        else:
-            self.client = None
+    console.print(f"[green]Chat - Ctrl-D or {Command.QUIT} to quit")
+    console.print(f"[green]Enter {Command.MULTI} to enter/exit multiline mode, {Command.HELP} for more commands")
 
-    async def chat(self,  markdown: bool, system_message: str | None = None,) -> None:
-        if self.client:
-            tools = await self.client.list_tools()
-            agent = Agent(self.model, tools=tools)
-        else:
-            agent = Agent(self.model)
-
-        console.print(f"[green]Chat - Ctrl-D or {Command.QUIT} to quit")
-        console.print(f"[green]Enter {Command.MULTI} to enter/exit multiline mode, {Command.HELP} for more commands")
-
+    async with agent.run_mcp_servers():
         message_history = None
         try:
             while True:
@@ -84,6 +65,3 @@ class Chat:
                     console.print(f"[red]Error: {str(e)[:2048]}")
         except EOFError:
             return
-        finally:
-            if self.client:
-                await self.client.close()

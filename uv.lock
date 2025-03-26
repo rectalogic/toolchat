@@ -649,21 +649,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pydantic-mcp"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "mcp" },
-    { name = "pydantic" },
-    { name = "pydantic-ai" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/3f/873ff020c7aca0062e4af486bb123ee3ee40ee660041753a3b0941ddc85f/pydantic_mcp-0.1.1.tar.gz", hash = "sha256:1fd52f14bc2b6fdf10eeb52672b175bea5514ea31dfa736388c51b08d46a857c", size = 58218 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/ac/41f84a853cfdf10b78491679ee92e53aba3b996b016968a8e88447cbb9fd/pydantic_mcp-0.1.1-py3-none-any.whl", hash = "sha256:8b46331fab6fb2a8b56fc869a6f1a7920e6519936d0a2f5dece0dce597eb5bd9", size = 3350 },
-]
-
-[[package]]
 name = "pydantic-settings"
 version = "2.8.1"
 source = { registry = "https://pypi.org/simple" }
@@ -876,7 +861,6 @@ dependencies = [
     { name = "click" },
     { name = "dotenv" },
     { name = "pydantic-ai" },
-    { name = "pydantic-mcp" },
     { name = "pyyaml" },
     { name = "rich" },
 ]
@@ -890,8 +874,7 @@ dev = [
 requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "dotenv", specifier = ">=0.9.9" },
-    { name = "pydantic-ai", specifier = ">=0.0.44" },
-    { name = "pydantic-mcp", specifier = ">=0.1.1" },
+    { name = "pydantic-ai", extras = ["mcp"], specifier = ">=0.0.44" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "rich", specifier = ">=13.9.4" },
 ]
