@@ -10,19 +10,7 @@ from rich.markdown import Markdown
 console = Console()
 
 
-async def render_text(response: AsyncIterator[str]) -> str:
-    current = []
-    async for chunk in response:
-        print(chunk, end="", flush=True)
-        current.append(chunk)
-    return "".join(current)
-
-
-async def render_markdown(response: AsyncIterator[str]) -> str:
-    current = ""
-    with Live(auto_refresh=False, console=console) as live:
-        async for chunk in response:
-            current += chunk
-            markdown = Markdown(current)
-            live.update(markdown, refresh=True)
-    return current
+async def render(response: AsyncIterator[str], markdown: bool = True) -> None:
+    with Live(auto_refresh=False, console=console, vertical_overflow="visible") as live:
+        async for message in response:
+            live.update(Markdown(message) if markdown else message, refresh=True)

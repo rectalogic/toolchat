@@ -2,10 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import asyncio
-import os
-import pathlib
-import typing as t
-from collections.abc import Callable, AsyncIterator, Sequence
+from collections.abc import Sequence
 
 import click
 from dotenv import load_dotenv
@@ -36,7 +33,7 @@ from .tools import load_mcp_servers
     type=click.Path(dir_okay=False),
     help="Path to tools yaml file - ./tools.yaml if it exists",
     show_default=True,
-    default="./tools.yaml",
+    default="./tools.yml",
 )
 @click.option("--system-prompt", "-s", help="System prompt.", multiple=True, default=())
 @click.option("--markdown/--no-markdown", help="Render LLM responses as Markdown.", default=True)

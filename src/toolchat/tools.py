@@ -1,16 +1,15 @@
 # Copyright (C) 2025 Andrew Wason
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import os
-from pydantic import BaseModel
-from pydantic_ai.mcp import MCPServer, MCPServerHTTP, MCPServerStdio
+
 import yaml
+from pydantic_ai.mcp import MCPServer, MCPServerHTTP, MCPServerStdio
 
 
 def load_mcp_servers(path: str) -> list[MCPServer]:
-    #XXX not finding relative path
     if not os.path.exists(path):
         return []
-    with open(path, "r") as f:
+    with open(path) as f:
         return [_load_mcp_server(s) for s in yaml.safe_load(f)]
 
 
