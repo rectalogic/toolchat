@@ -11,6 +11,6 @@ console = Console()
 
 
 async def render(response: AsyncIterator[str], markdown: bool = True) -> None:
-    with Live(auto_refresh=False, console=console, vertical_overflow="visible") as live:
+    with Live(auto_refresh=False, console=console) as live:
         async for message in response:
             live.update(Markdown(message) if markdown else message, refresh=True)

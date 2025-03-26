@@ -1,25 +1,30 @@
 # Copyright (C) 2025 Andrew Wason
 # SPDX-License-Identifier: AGPL-3.0-or-later
-import typing as t
 import os
+import typing as t
 
 import yaml
 from pydantic_ai.mcp import MCPServer, MCPServerHTTP, MCPServerStdio
 from pydantic_ai.tools import ToolDefinition
 
-class MCPServerStdioSchema(MCPServerStdio):
+# Post-process schema so it works with Gemini
+# https://github.com/pydantic/pydantic-ai/issues/1250
+class MCPServerMixin(MCPServer):
     @t.override
     async def list_tools(self) -> list[ToolDefinition]:
-        return [modify_schema(tool) for tool in await super().list_tools()]
+        return [self._modify_schema(tool) for tool in await super().list_tools()]
 
-class MCPServerHTTPSchema(MCPServerHTTP):
-    @t.override
-    async def list_tools(self) -> list[ToolDefinition]:
-        return [modify_schema(tool) for tool in await super().list_tools()]
+    def _modify_schema(self, tool: ToolDefinition) -> ToolDefinition:
+        tool.parameters_json_schema.pop("$schema", None)
+        return tool
 
-def modify_schema(tool: ToolDefinition) -> ToolDefinition:
-    tool.parameters_json_schema.pop("$schema", None)
-    return tool
+
+class MCPServerStdioSchema(MCPServerMixin, MCPServerStdio):
+    pass
+
+
+class MCPServerHTTPSchema(MCPServerMixin, MCPServerHTTP):
+    pass
 
 
 def load_mcp_servers(path: str) -> list[MCPServer]:

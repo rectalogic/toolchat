@@ -76,4 +76,4 @@ async def _stream(
                         if isinstance(event, FunctionToolCallEvent):
                             console.print(f"[yellow]Tool {event.part.tool_name} {event.part.args}")
 
-        return run.result.new_messages() if run.result else []
+        return run.result.all_messages() if run.result else []
