@@ -44,43 +44,44 @@ async def chat(
             while True:
                 prompt = input("> ")
 
-                if prompt == Command.QUIT:
-                    return
-                elif prompt == Command.HELP:
-                    console.print(f"[yellow]{Command.MULTILINE} - enter multiline mode, enter again to exit")
-                    console.print(f"[yellow]{Command.ATTACH_IMAGE} - add an image attachment to the current prompt")
-                    console.print(f"[yellow]{Command.ATTACH_AUDIO} - add an audio attachment to the current prompt")
-                    console.print(
-                        f"[yellow]{Command.ATTACH_DOCUMENT} - add a document attachment to the current prompt"
-                    )
-                    console.print(f"[yellow]{Command.HELP} - this message")
-                    console.print(f"[yellow]{Command.QUIT} - quit (also Ctrl-D)")
-                    continue
-                elif prompt == Command.ATTACH_IMAGE:
-                    url = input("image url>> ")
-                    prompts.append(ImageUrl(url=url))
-                    continue
-                elif prompt == Command.ATTACH_AUDIO:
-                    url = input("audio url>> ")
-                    prompts.append(AudioUrl(url=url))
-                    continue
-                elif prompt == Command.ATTACH_DOCUMENT:
-                    url = input("document url>> ")
-                    prompts.append(DocumentUrl(url=url))
-                    continue
-                elif prompt == Command.MULTILINE:
-                    lines: list[str] = []
-                    while (line := input(". ")) != Command.MULTILINE:
-                        if line in Command:
-                            console.print(
-                                "[red]Commands not accept in multiline mode,"
-                                f" enter {Command.MULTILINE} to exit multiline"
-                            )
-                            continue
-                        lines.append(line)
-                    prompts.append("\n".join(lines))
-                else:
-                    prompts.append(prompt)
+                match prompt:
+                    case Command.QUIT:
+                        return
+                    case Command.HELP:
+                        console.print(f"[yellow]{Command.MULTILINE} - enter multiline mode, enter again to exit")
+                        console.print(f"[yellow]{Command.ATTACH_IMAGE} - add an image attachment to the current prompt")
+                        console.print(f"[yellow]{Command.ATTACH_AUDIO} - add an audio attachment to the current prompt")
+                        console.print(
+                            f"[yellow]{Command.ATTACH_DOCUMENT} - add a document attachment to the current prompt"
+                        )
+                        console.print(f"[yellow]{Command.HELP} - this message")
+                        console.print(f"[yellow]{Command.QUIT} - quit (also Ctrl-D)")
+                        continue
+                    case Command.ATTACH_IMAGE:
+                        url = input("image url>> ")
+                        prompts.append(ImageUrl(url=url))
+                        continue
+                    case Command.ATTACH_AUDIO:
+                        url = input("audio url>> ")
+                        prompts.append(AudioUrl(url=url))
+                        continue
+                    case Command.ATTACH_DOCUMENT:
+                        url = input("document url>> ")
+                        prompts.append(DocumentUrl(url=url))
+                        continue
+                    case Command.MULTILINE:
+                        lines: list[str] = []
+                        while (line := input(". ")) != Command.MULTILINE:
+                            if line in Command:
+                                console.print(
+                                    "[red]Commands not accept in multiline mode,"
+                                    f" enter {Command.MULTILINE} to exit multiline"
+                                )
+                                continue
+                            lines.append(line)
+                        prompts.append("\n".join(lines))
+                    case _:
+                        prompts.append(prompt)
 
                 message_history = await _stream(agent, prompts, markdown, message_history)
                 prompts = []
