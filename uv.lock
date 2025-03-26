@@ -889,6 +889,7 @@ dependencies = [
     { name = "click" },
     { name = "dotenv" },
     { name = "pydantic-ai" },
+    { name = "pydantic-core" },
     { name = "pyyaml" },
     { name = "rich" },
 ]
@@ -905,6 +906,7 @@ requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "pydantic-ai", specifier = ">=0.0.44" },
+    { name = "pydantic-core", specifier = ">=2.27.2" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "rich", specifier = ">=13.9.4" },
 ]
