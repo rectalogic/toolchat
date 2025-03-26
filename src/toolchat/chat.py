@@ -14,8 +14,11 @@ from rich.markdown import Markdown
 from pydantic_ai import Agent
 from pydantic_ai.mcp import MCPServer
 from pydantic_ai.models import KnownModelName
+from pydantic_ai.messages import ModelMessage
 
 from .render import console, render_text, render_markdown
+
+# type Renderer = Callable(response: AsyncIterator[str]) -> CoroutineType[Any, Any, str]
 
 class Command(enum.StrEnum):
     MULTI = "!multi"
@@ -28,6 +31,11 @@ async def chat(model: KnownModelName, markdown: bool, system_prompt: str | Seque
 
     console.print(f"[green]Chat - Ctrl-D or {Command.QUIT} to quit")
     console.print(f"[green]Enter {Command.MULTI} to enter/exit multiline mode, {Command.HELP} for more commands")
+
+    if markdown:
+        renderer = render_markdown
+    else:
+        renderer = render_text
 
     async with agent.run_mcp_servers():
         message_history = None
@@ -54,14 +62,15 @@ async def chat(model: KnownModelName, markdown: bool, system_prompt: str | Seque
                     prompt = "\n".join(lines)
 
                 try:
-                    async with agent.run_stream(prompt, message_history=message_history) as result:
-                        stream = result.stream_text(delta=True)
-                        if markdown:
-                            await render_markdown(stream)
-                        else:
-                            await render_text(stream)
-                        message_history = result.all_messages() #XXX does not include final message due to delta?
+                    message_history = await _stream(agent, prompt, renderer, message_history)
                 except Exception as e:
                     console.print(f"[red]Error: {str(e)[:2048]}")
         except EOFError:
             return
+
+
+async def _stream(agent: Agent, prompt: str, renderer, message_history: list[ModelMessage] | None) -> list[ModelMessage]:
+    async with agent.run_stream(prompt, message_history=message_history) as result:
+        stream = result.stream_text(delta=True)
+        await renderer(stream)
+        return result.all_messages() #XXX does not include final message due to delta?
