@@ -22,17 +22,15 @@ from pydantic_core import to_jsonable_python
 
 from .render import console, render
 
-# type Renderer = Callable(response: AsyncIterator[str]) -> CoroutineType[Any, Any, str]
-
 
 class Command(enum.StrEnum):
-    MULTILINE = "!multi"
-    ATTACH_IMAGE = "!image"
-    ATTACH_AUDIO = "!audio"
-    ATTACH_DOCUMENT = "!document"
-    SAVE = "!save"
-    HELP = "!help"
-    QUIT = "!quit"
+    MULTILINE = "/multi"
+    ATTACH_IMAGE = "/image"
+    ATTACH_AUDIO = "/audio"
+    ATTACH_DOCUMENT = "/document"
+    SAVE = "/save"
+    HELP = "/help"
+    QUIT = "/quit"
 
     @classmethod
     def from_value(cls, value: str) -> Command | None:
@@ -51,8 +49,10 @@ async def chat(
 ) -> None:
     agent = Agent(model, system_prompt=system_prompt, mcp_servers=mcp_servers)
 
-    console.print(f"[green]Chat - Ctrl-D or {Command.QUIT} to quit")
-    console.print(f"[green]Enter {Command.MULTILINE} to enter/exit multiline mode, {Command.HELP} for more commands")
+    console.print(f"[green]ToolChat - Ctrl-D or {Command.QUIT} to quit")
+    console.print(
+        f"[green]Enter {Command.MULTILINE} to enter and exit multiline mode, {Command.HELP} for more commands"
+    )
 
     async with agent.run_mcp_servers():
         prompts: list[UserContent] = []

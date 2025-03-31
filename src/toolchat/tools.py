@@ -10,10 +10,9 @@ from pydantic_ai.tools import ToolDefinition
 
 # Post-process schema so it works with Gemini
 # https://github.com/pydantic/pydantic-ai/issues/1250
-class MCPServerMixin(MCPServer):
-    @t.override
-    async def list_tools(self) -> list[ToolDefinition]:
-        return [self._modify_schema(tool) for tool in await super().list_tools()]
+class MCPServerMixin:
+    def _list_tools_schema(self, tools: list[ToolDefinition]) -> list[ToolDefinition]:
+        return [self._modify_schema(tool) for tool in tools]
 
     def _modify_schema(self, tool: ToolDefinition) -> ToolDefinition:
         tool.parameters_json_schema.pop("$schema", None)
@@ -21,11 +20,18 @@ class MCPServerMixin(MCPServer):
 
 
 class MCPServerStdioSchema(MCPServerMixin, MCPServerStdio):
-    pass
+    @t.override
+    async def list_tools(self) -> list[ToolDefinition]:
+        return self._list_tools_schema(await super().list_tools())
+
+    async def __aexit__(self, exc_type, exc_value, traceback) -> bool | None:
+        return await super().__aexit__(exc_type, exc_value, traceback)
 
 
 class MCPServerHTTPSchema(MCPServerMixin, MCPServerHTTP):
-    pass
+    @t.override
+    async def list_tools(self) -> list[ToolDefinition]:
+        return self._list_tools_schema(await super().list_tools())
 
 
 def load_mcp_servers(path: str | None) -> list[MCPServer]:
