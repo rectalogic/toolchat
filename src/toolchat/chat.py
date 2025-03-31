@@ -136,6 +136,6 @@ async def _stream(
                 async with node.stream(run.ctx) as tool_stream:
                     async for event in tool_stream:
                         if isinstance(event, FunctionToolCallEvent):
-                            console.print(f"[grey0]Tool {event.part.tool_name} {event.part.args}")
+                            console.print(f"[light_slate_grey]Tool {event.part.tool_name} {event.part.args}")
 
         return run.result.all_messages() if run.result else []
