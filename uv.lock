@@ -910,6 +910,7 @@ source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "dotenv" },
+    { name = "httpx" },
     { name = "pydantic-ai" },
     { name = "pydantic-core" },
     { name = "pyyaml" },
@@ -927,6 +928,7 @@ dev = [
 requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "dotenv", specifier = ">=0.9.9" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic-ai", specifier = ">=0.0.44" },
     { name = "pydantic-core", specifier = ">=2.27.2" },
     { name = "pyyaml", specifier = ">=6.0.2" },
