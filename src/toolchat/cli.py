@@ -48,10 +48,16 @@ def list_models(ctx: click.Context, param: click.Option, value: bool):
     show_default=True,
 )
 @click.option(
-    "--tools",
+    "--tool-servers",
     "-t",
     type=click.Path(dir_okay=False),
-    help="Path to tools yaml file",
+    help="Path to MCP tool servers yaml file",
+)
+@click.option(
+    "--enable-tool-server",
+    "-et",
+    multiple=True,
+    help="Enable named MCP tool server, all if not specified",
 )
 @click.option(
     "--history",
@@ -65,7 +71,8 @@ def list_models(ctx: click.Context, param: click.Option, value: bool):
 def cli(
     model: KnownModelName,
     dotenv: str,
-    tools: str | None,
+    tool_servers: str | None,
+    enable_tool_server: list[str] | None,
     history: str | None,
     system_prompt: Sequence[str],
     markdown: bool,
@@ -82,6 +89,6 @@ def cli(
             markdown,
             message_history=message_history,
             system_prompt=system_prompt,
-            mcp_servers=load_mcp_servers(tools),
+            mcp_servers=load_mcp_servers(tool_servers, enable_tool_server),
         )
     )
