@@ -9,10 +9,11 @@ dependencies = [
     "click>=8.1.8",
     "dotenv>=0.9.9",
     "httpx>=0.28.1",
-    "pydantic-ai>=0.0.44",
+    "pydantic-ai>=0.0.52",
     "pydantic-core>=2.27.2",
     "pyyaml>=6.0.2",
     "rich>=13.9.4",
+    "typing-inspection>=0.4.0",
 ]
 
 [project.scripts]
@@ -23,11 +24,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = [
-    "mypy>=1.15.0",
- "ruff>=0.11.2",
- "types-pyyaml>=6.0.12.20250326",
-]
+dev = ["mypy>=1.15.0", "ruff>=0.11.2", "types-pyyaml>=6.0.12.20250326"]
 
 [tool.ruff]
 target-version = "py312"

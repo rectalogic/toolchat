@@ -129,12 +129,6 @@ async def chat(
                 elif command is Command.MULTILINE:
                     lines: list[str] = []
                     while (line := input(". ")) != Command.MULTILINE:
-                        if line in Command:
-                            console.print(
-                                "[red]Commands not accept in multiline mode,"
-                                f" enter {Command.MULTILINE} to exit multiline"
-                            )
-                            continue
                         lines.append(line)
                     prompts.append("\n".join(lines))
                 else:
@@ -161,6 +155,6 @@ async def _stream(
                 async with node.stream(run.ctx) as tool_stream:
                     async for event in tool_stream:
                         if isinstance(event, FunctionToolCallEvent):
-                            console.print(f"[light_slate_grey]Tool {event.part.tool_name} {event.part.args}")
+                            console.print(f"[dim]Tool {event.part.tool_name} {event.part.args}")
 
         return run.result.all_messages() if run.result else []

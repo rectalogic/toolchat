@@ -9,9 +9,17 @@ import click
 from dotenv import load_dotenv
 from pydantic_ai.messages import ModelMessagesTypeAdapter
 from pydantic_ai.models import KnownModelName
+from typing_inspection.introspection import get_literal_values
 
 from .chat import chat
 from .tools import load_mcp_servers
+
+
+def list_models(ctx: click.Context, param: click.Option, value: bool):
+    if not value:
+        return
+    click.echo("\n".join(get_literal_values(KnownModelName.__value__)))
+    ctx.exit(0)
 
 
 @click.command()
@@ -21,6 +29,15 @@ from .tools import load_mcp_servers
     show_default=True,
     default="openai:gpt-4o-mini",
     help="LLM model to use.",
+)
+@click.option(
+    "--list-models",
+    "-l",
+    is_flag=True,
+    callback=list_models,
+    expose_value=False,
+    is_eager=True,
+    help="List known LLM models.",
 )
 @click.option(
     "--dotenv",
